@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import ClassCounter from "./components/ClassCounter";
-import Counter from "./components/Counter";
 import MyInput from "./components/UI/input/MyInput";
 import MyButton from "./components/UI/button/MyButton";
 import PostList from "./components/PostList";
 import "./styles/App.css";
+import PostForm from "./components/PostForm";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -13,38 +12,16 @@ function App() {
     { id: 3, title: "C++", body: "Description" },
   ]);
 
-  const [post, setPost] = useState({ title: "", body: "" });
+ const createPost = (newPost)=>
+ {
+  setPosts([...posts,newPost])
+ }
 
-  const addNewPost = (e) => {
-    e.preventDefault();
-    setPosts([...posts, { id: Date.now(), ...post }]);
-    setPost({ title: "", body: "" });
-  };
+
 
   return (
     <div className="App">
-      <form>
-        <MyInput
-          type="text"
-          value={post.title}
-          placeholder="Название поста"
-          onChange={(event) => {
-            setPost({...post,title: event.target.value});
-          }}
-        />
-
-        <MyInput
-          value={post.body}
-          type="text"
-          placeholder="Описание поста"
-          onChange={(event) => {
-            setPost({...post,body: event.target.value});
-          }}
-        />
-        <MyButton type="submit" onClick={addNewPost}>
-          Создать пост
-        </MyButton>
-      </form>
+      <PostForm create={createPost}/>
       <PostList posts={posts} title="Список постов" />
     </div>
   );
