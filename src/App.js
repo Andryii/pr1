@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ClassCounter from "./components/ClassCounter";
 import Counter from "./components/Counter";
 import MyInput from "./components/UI/input/MyInput";
@@ -16,9 +16,12 @@ function App() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
+  const bodyInputRef = useRef()
+
   const addNewPost = (e) => {
     e.preventDefault()
-    setPosts([...posts, { id: 4, title: title, body: body }]);
+    // setPosts([...posts, { id: 4, title: title, body: body }]);
+    console.log(bodyInputRef.current.value);
   };
 
   return (
@@ -32,14 +35,10 @@ function App() {
             setTitle(event.target.value);
           }}
         />
-
         <MyInput
-          value={body}
+          ref = {bodyInputRef}
           type="text"
           placeholder="Описание поста"
-          onChange={(event) => {
-            setBody(event.target.value);
-          }}
         />
         <MyButton  type="submit" onClick={addNewPost}>Создать пост</MyButton>
       </form>
