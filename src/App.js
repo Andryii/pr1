@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import ClassCounter from "./components/ClassCounter";
 import Counter from "./components/Counter";
 import MyInput from "./components/UI/input/MyInput";
@@ -13,15 +13,12 @@ function App() {
     { id: 3, title: "C++", body: "Description" },
   ]);
 
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-
-  const bodyInputRef = useRef()
+  const [post, setPost] = useState({ title: "", body: "" });
 
   const addNewPost = (e) => {
-    e.preventDefault()
-    // setPosts([...posts, { id: 4, title: title, body: body }]);
-    console.log(bodyInputRef.current.value);
+    e.preventDefault();
+    setPosts([...posts, { id: Date.now(), ...post }]);
+    setPost({ title: "", body: "" });
   };
 
   return (
@@ -29,18 +26,24 @@ function App() {
       <form>
         <MyInput
           type="text"
-          value={title}
+          value={post.title}
           placeholder="Название поста"
           onChange={(event) => {
-            setTitle(event.target.value);
+            setPost({...post,title: event.target.value});
           }}
         />
+
         <MyInput
-          ref = {bodyInputRef}
+          value={post.body}
           type="text"
           placeholder="Описание поста"
+          onChange={(event) => {
+            setPost({...post,body: event.target.value});
+          }}
         />
-        <MyButton  type="submit" onClick={addNewPost}>Создать пост</MyButton>
+        <MyButton type="submit" onClick={addNewPost}>
+          Создать пост
+        </MyButton>
       </form>
       <PostList posts={posts} title="Список постов" />
     </div>
