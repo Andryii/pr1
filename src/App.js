@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MyInput from "./components/UI/input/MyInput";
 import MyButton from "./components/UI/button/MyButton";
 import PostList from "./components/PostList";
@@ -8,7 +8,8 @@ import MySelect from "./components/UI/select/MySelect";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import { usePosts, useSortedPosts } from "./hooks/usePosts";
-import axios from "axios";
+
+import PostService from "./API/PostService";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -16,8 +17,13 @@ function App() {
     { id: 2, title: "Python", body: "Description" },
     { id: 3, title: "C++", body: "Description" },
   ]);
-
   const [modal, setModal] = useState(false);
+  const [filter, setFilter] = useState({ sort: "", query: "" });
+  const sortedAndSerchedPosts = usePosts(posts, filter.sort, filter.query);
+  const [isPostsLoading, setІsPostsLoading] = useState(false);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -25,29 +31,18 @@ function App() {
   };
 
   async function fetchPosts() {
-    const response = await axios.get(
-      "https://jsonplaceholder.typicode.com/posts?10"
-    );
-    console.log(response);
+    setІsPostsLoading(true);
+    const posts = await PostService.getAll();
+    setPosts(posts);
+    setІsPostsLoading(false);
   }
 
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-  const [filter, setFilter] = useState({ sort: "", query: "" });
-
-  const sortedAndSerchedPosts = usePosts(posts, filter.sort, filter.query);
-
   return (
     <div className="App">
-      <MyButton
-        onClick={() => {
-          fetchPosts();
-        }}
-      >
-        GET POST
-      </MyButton>
       <MyButton style={{ marginTop: "30px" }} onClick={() => setModal(true)}>
         Создать пост
       </MyButton>
@@ -58,11 +53,15 @@ function App() {
       <hr style={{ margin: "15px 0" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
 
-      <PostList
-        remove={removePost}
-        posts={sortedAndSerchedPosts}
-        title="Список постов"
-      />
+      {isPostsLoading ? (
+        <h1>Идет загрузка...</h1>
+      ) : (
+        <PostList
+          remove={removePost}
+          posts={sortedAndSerchedPosts}
+          title="Список постов"
+        />
+      )}
     </div>
   );
 }
