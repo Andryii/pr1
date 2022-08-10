@@ -6,6 +6,7 @@ import "./styles/App.css";
 import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
 import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/modal/MyModal";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -14,8 +15,11 @@ function App() {
     { id: 3, title: "C++", body: "Description" },
   ]);
 
+  const[modal, setModal] = useState(false);
+
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
+    setModal(false)
   };
 
   const removePost = (post) => {
@@ -25,7 +29,6 @@ function App() {
   const [filter, setFilter] = useState({ sort: "", query: "" });
 
   const sortedPosts = useMemo(() => {
-    console.log("Сортировка");
     if (filter.sort) {
       return [...posts].sort((a, b) =>
         a[filter.sort].localeCompare(b[filter.sort])
@@ -43,7 +46,13 @@ function App() {
 
   return (
     <div className="App">
-      <PostForm create={createPost} />
+      <MyButton style={{marginTop: "30px"}} onClick = {()=>setModal(true)}>
+        Создать пост
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </MyModal>
+
       <hr style={{ margin: "15px 0" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
 
