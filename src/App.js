@@ -22,7 +22,6 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-
   const [filter, setFilter] = useState({ sort: "", query: "" });
 
   const sortedPosts = useMemo(() => {
@@ -42,24 +41,17 @@ function App() {
     });
   }, [filter.query, sortedPosts]);
 
-
   return (
     <div className="App">
       <PostForm create={createPost} />
       <hr style={{ margin: "15px 0" }}></hr>
-      <PostFilter 
-        filter={filter}
-        setFilter={setFilter}
+      <PostFilter filter={filter} setFilter={setFilter} />
+
+      <PostList
+        remove={removePost}
+        posts={sortedAndSerchedPosts}
+        title="Список постов"
       />
-      {sortedAndSerchedPosts.length !== 0 ? (
-        <PostList
-          remove={removePost}
-          posts={sortedAndSerchedPosts}
-          title="Список постов"
-        />
-      ) : (
-        <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
-      )}
     </div>
   );
 }
