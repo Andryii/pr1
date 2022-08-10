@@ -10,6 +10,7 @@ import MyModal from "./components/UI/modal/MyModal";
 import { usePosts, useSortedPosts } from "./hooks/usePosts";
 
 import PostService from "./API/PostService";
+import Loader from "./components/UI/loader/Loader";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -20,7 +21,7 @@ function App() {
   const [modal, setModal] = useState(false);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const sortedAndSerchedPosts = usePosts(posts, filter.sort, filter.query);
-  const [isPostsLoading, setІsPostsLoading] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -31,15 +32,18 @@ function App() {
   };
 
   async function fetchPosts() {
-    setІsPostsLoading(true);
-    const posts = await PostService.getAll();
-    setPosts(posts);
-    setІsPostsLoading(false);
+    setIsPostsLoading(true);
+
+    setTimeout(async () => {
+      const posts = await PostService.getAll();
+      setPosts(posts);
+      setIsPostsLoading(false);
+    }, 1000);
   }
 
-  const removePost = (post) => {
+  function removePost(post) {
     setPosts(posts.filter((p) => p.id !== post.id));
-  };
+  }
 
   return (
     <div className="App">
@@ -54,7 +58,9 @@ function App() {
       <PostFilter filter={filter} setFilter={setFilter} />
 
       {isPostsLoading ? (
-        <h1>Идет загрузка...</h1>
+        <div style={{ display: "flex", justifyContent: "center" , marginTop: "50px"}}>
+          <Loader />
+        </div>
       ) : (
         <PostList
           remove={removePost}
