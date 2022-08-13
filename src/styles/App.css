@@ -21,7 +21,7 @@
 }
 
 .post-enter {
-    transform: translateX(-350px);
+  transform: translateX(-350px);
 }
 .post-enter-active {
   transform: translateX(0);
@@ -35,29 +35,25 @@
   transition: all 500ms ease-in;
 }
 
-.page__wrapper
-{
+.page__wrapper {
   margin-top: 30px;
   justify-content: center;
   display: flex;
 }
 
-.page
-{
+.page {
   padding: 10px;
   margin: 0 10px;
   border: 1px solid teal;
   cursor: pointer;
 }
 
-.page__current
-{
+.page__current {
   border: 2px solid orange;
   font-weight: bold;
 }
 
-.navbar
-{
+.navbar {
   height: 50px;
   width: 100vw;
   display: flex;
@@ -66,8 +62,10 @@
   background: lightgray;
 }
 
-.navbar__links
-{
+.navbar__links {
   margin-left: auto;
 }
 
+.post__btns {
+  display: flex;
+}
