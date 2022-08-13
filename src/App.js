@@ -10,7 +10,8 @@ import { usePosts } from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/loader/Loader";
 import { useFetching } from "./hooks/useFetching";
-import { getPageCount, getPagesArray } from "./utils/pages";
+import { getPageCount } from "./utils/pages";
+import Pagination from "./components/UI/paginatoin/Pagination";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -25,18 +26,18 @@ function App() {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
-  let pagesArray = getPagesArray(totalPages);
-  console.log(pagesArray);
-  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-    const response = await PostService.getAll(limit, page);
-    setPosts(response.data);
-    const totalCount = response.headers["x-total-count"];
-    setTotalPages(getPageCount(totalCount, limit));
-  });
+  const [fetchPosts, isPostsLoading, postError] = useFetching(
+    async (limit, page) => {
+      const response = await PostService.getAll(limit, page);
+      setPosts(response.data);
+      const totalCount = response.headers["x-total-count"];
+      setTotalPages(getPageCount(totalCount, limit));
+    }
+  );
 
   useEffect(() => {
-    fetchPosts();
-  }, [page]);
+    fetchPosts(limit, page);
+  }, []);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -45,6 +46,7 @@ function App() {
 
   const changePage = (page) => {
     setPage(page);
+    fetchPosts(limit, page);
   };
 
   function removePost(post) {
@@ -83,19 +85,7 @@ function App() {
         />
       )}
 
-      <div className="page__wrapper">
-        {pagesArray.map((p) => {
-          return (
-            <span
-              onClick={() => changePage(p)}
-              key={p}
-              className={page === p ? "page page__current" : "page"}
-            >
-              {p}
-            </span>
-          );
-        })}
-      </div>
+      <Pagination page={page} changePage={changePage} totalPages={totalPages} />
     </div>
   );
 }
