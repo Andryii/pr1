@@ -12,13 +12,10 @@ import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import Pagination from "../components/UI/paginatoin/Pagination";
 import { useObserver } from "../hooks/useOserver";
+import MySelect from "../components/UI/select/MySelect";
 
 function Posts() {
-  const [posts, setPosts] = useState([
-    { id: 1, title: "Javascript", body: "Description" },
-    { id: 2, title: "Python", body: "Description" },
-    { id: 3, title: "C++", body: "Description" },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [modal, setModal] = useState(false);
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const sortedAndSerchedPosts = usePosts(posts, filter.sort, filter.query);
@@ -42,7 +39,7 @@ function Posts() {
 
   useEffect(() => {
     fetchPosts(limit, page);
-  }, [page]);
+  }, [page, limit]);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -68,6 +65,19 @@ function Posts() {
 
       <hr style={{ margin: "15px 0" }}></hr>
       <PostFilter filter={filter} setFilter={setFilter} />
+
+      <MySelect
+        value={limit}
+        onChange={(value) => setLimit(value)}
+        defaultValue="Количество элементов"
+        options={[
+          { value: 5, name: "5" },
+          { value: 10, name: "10" },
+          { value: 25, name: "25" },
+          { value: 50, name: "25" },
+          { value: -1, name: "Показать все" },
+        ]}
+      />
 
       {postError && <h1>Произошла ошибка ${postError}</h1>}
 
